@@ -2,7 +2,7 @@ import base64
 from fastapi import FastAPI, HTTPException, Security
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import APIKeyHeader
-from src.search import get_results
+from search import get_results
 
 app = FastAPI(title="Incubig search API",
               description="Semantic search on USPTO patent database",
@@ -34,6 +34,6 @@ def get_api_key(api_key_header: str = Security(api_key_header)) -> str:
         detail="Invalid or missing API Key",
     )
 
-@app.get("/xsearch")
+@app.get("/xsearch/search")
 def search(query: str="*",filter: str=None,select: str="publication_number,publication_year,application_year,application_date,title,abstract_text,industry,sector,sub_sector,main_cpc,further_cpc,assignee,assignee_country,inventor,kind",search_fields: str="title,abstract_text,description_text,claims_text", top: int=1000, skip: int=0,cut_off: float=0.0, api_key: str = Security(get_api_key)):
     return(get_results(query,filter,select,search_fields,top,skip,cut_off))
